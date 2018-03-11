@@ -4,6 +4,7 @@
 
 <head>
     <meta charset="utf-8">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico?"/>
     <title>Flickr Photo Map</title>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
@@ -110,6 +111,7 @@
                     "method": "GET",
                     "headers": {}
                 }).done(function (data) {
+                    console.log(data);
                     photos.push({
                         id: data.photo.id,
                         lat: data.photo.location.latitude,
