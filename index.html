@@ -1,0 +1,156 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Leaflet</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="libs/Leaflet.Photo.css" />
+    <link rel="stylesheet" href="libs/MarkerCluster.css" />
+    <link rel="stylesheet" href="libs/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="style.css" />
+
+
+</head>
+
+<body>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+    <script src="libs/leaflet.markercluster.js"></script>
+    <script src="libs/Leaflet.Photo.js"></script>
+  <!--  <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script>
+        // create Leaflet map
+        var map = L.map('map', {
+            zoomSnap: .2,
+            zoomControl: false,
+            center: [21.452, -157.958],
+            zoom: 11
+        });
+
+        L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager_nolabels/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
+        }).addTo(map);
+
+
+        var pointLayerG = L.layerGroup();
+
+        var photoLayer = L.photo.cluster().on('click', function (evt) {
+            var photo = evt.layer.photo,
+                template = '<img src="{thumbnail}"/></a><p>{thumbnail}</p>';
+            if (photo.video && (!!document.createElement('video').canPlayType(
+                    'video/mp4; codecs=avc1.42E01E,mp4a.40.2'))) {
+                template =
+                    '<video autoplay controls poster="{thumbnail}"><source src="{video}" type="video/mp4"/></video>';
+            };
+            evt.layer.bindPopup(L.Util.template(template, photo), {
+                className: 'leaflet-popup-photo',
+                minWidth: 400
+            }).openPopup();
+        });
+
+
+        var flickrKey = '&api_key=e4dd71a1bf7d41f467b8dc7aa8e987fd',
+            userID = '&user_id=153002014@N03',
+            flickrStart = "https://api.flickr.com/services/rest/?method=",
+            flickrFormat = "&format=json&nojsoncallback=1",
+            flickrGetPhotoData = flickrStart + 'flickr.people.getPhotos' + flickrKey + userID + flickrFormat;
+
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": flickrGetPhotoData,
+            "method": "GET",
+            "headers": {}
+        };
+
+        $.ajax(settings).done(function (data) {
+            // console.log(data);
+            getData(data.photos);
+        })
+
+        function getData(data) {
+            var allPhotos = [];
+
+            data.photo.forEach(function (pic) {
+                allPhotos.push({
+                    farm: pic.farm,
+                    id: pic.id,
+                    secret: pic.secret,
+                    server: pic.server,
+                    thumb: 'https://farm' + pic.farm + '.staticflickr.com/' + pic.server +
+                        '/' + pic.id + '_' + pic.secret + '.jpg',
+                    geoURL: "https://api.flickr.com/services/rest/?method=flickr.photos.geo.getLocation&api_key=e4dd71a1bf7d41f467b8dc7aa8e987fd&photo_id=" +
+                        pic.id + "&format=json&nojsoncallback=1"
+                });
+            })
+
+            getLocation(allPhotos);
+        }
+
+        function getLocation(allPhotos) {
+
+            var photos = [];
+
+            for (var x in allPhotos) {
+                //console.log(allPhotos[x]);
+                $.ajax({
+                    "async": true,
+                    "crossDomain": true,
+                    "url": allPhotos[x].geoURL,
+                    "method": "GET",
+                    "headers": {}
+                }).done(function (data) {
+                    //console.log(data.photo.location);
+                    photos.push({
+                        id: data.photo.id,
+                        lat: data.photo.location.latitude,
+                        lng: data.photo.location.longitude,
+                    });
+                    if (photos.length == allPhotos.length) {
+                        addToMap(photos, allPhotos);
+                    }
+                })
+            }
+        }
+
+        function addToMap(photos, allPhotos) {
+
+            var combo = [];
+
+            for (var x in photos) {
+                for (var y in allPhotos) {
+                    if (photos[x].id == allPhotos[y].id) {
+                        combo.push({
+                            farm: allPhotos[y].farm,
+                            id: allPhotos[y].id,
+                            secret: allPhotos[y].secret,
+                            server: allPhotos[y].server,
+                            thumbnail: allPhotos[y].thumb,
+                            lat: photos[x].lat,
+                            lng: photos[x].lng
+                        })
+                    }
+                }
+            }
+
+         /*   console.log(photos);
+            console.log('-----');
+            console.log(allPhotos); */
+
+            console.log(combo);
+
+            photoLayer.add(combo).addTo(map);
+
+        }
+    </script>
+</body>
+
+</html>
