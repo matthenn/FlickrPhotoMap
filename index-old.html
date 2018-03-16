@@ -136,7 +136,7 @@
                     media: pic.media,
                     lat: pic.latitude,
                     lng: pic.longitude,
-                    thumbnail: 'https://farm' + pic.farm + '.staticflickr.com/' + pic.server + '/' + pic.id +
+                    thumb: 'https://farm' + pic.farm + '.staticflickr.com/' + pic.server + '/' + pic.id +
                         '_' + pic.secret + '.jpg',
                     geoURL: "https://api.flickr.com/services/rest/?method=flickr.photos.geo.getLocation&api_key=e4dd71a1bf7d41f467b8dc7aa8e987fd&photo_id=" +
                         pic.id + "&format=json&nojsoncallback=1"
@@ -145,8 +145,60 @@
             getLocation(allPhotos);
         }
 
+        //get geo location from photos
         function getLocation(allPhotos) {
-            photoLayer.add(allPhotos).addTo(map);
+
+          //  photoLayer.add(allPhotos).addTo(map);
+            var photos = [];
+
+            //for all photos, request geo data
+            for (var x in allPhotos) {
+
+                $.ajax({
+                    "async": true,
+                    "crossDomain": true,
+                    "url": allPhotos[x].geoURL,
+                    "method": "GET",
+                    "headers": {}
+                }).done(function (data) {
+                    //console.log(data);
+                    photos.push({
+                        id: data.photo.id,
+                        lat: data.photo.location.latitude,
+                        lng: data.photo.location.longitude,
+                    });
+                    //async kinda workaround
+                    if (photos.length == allPhotos.length) {
+                        addToMap(photos, allPhotos);
+                    }
+                })
+            }
+        }
+
+        //combine geo data array with photo
+        //info array based on picture id
+        function addToMap(photos, allPhotos) {
+
+            var combo = [];
+
+            for (var x in photos) {
+                for (var y in allPhotos) {
+                    if (photos[x].id == allPhotos[y].id) {
+                        combo.push({
+                            date: allPhotos[y].date,
+                            farm: allPhotos[y].farm,
+                            id: allPhotos[y].id,
+                            secret: allPhotos[y].secret,
+                            server: allPhotos[y].server,
+                            thumbnail: allPhotos[y].thumb,
+                            lat: photos[x].lat,
+                            lng: photos[x].lng
+                        })
+                    }
+                }
+            }
+            //add new array to photoLayer and add it to map
+            photoLayer.add(combo).addTo(map);
         }
     </script>
 </body>
