@@ -1,5 +1,7 @@
-body {
+html {
     font-family: 'Slabo 27px', serif;
+}
+body {
     margin: 0;
     padding: 0;
 }
@@ -9,6 +11,23 @@ body {
     width: 100%;
     top: 0;
     bottom: 0;
+}
+
+.button {
+    text-align: center;
+    margin: 5px;
+    padding: 2px;
+    width: 100px;
+    border: 2px solid #B0B0B0;
+}
+
+.button:hover {
+    cursor: pointer;
+    background-color:  	#B0B0B0;
+}
+
+#center, #latestPic {
+    display: inline;
 }
 
 /* photo/video popup */
@@ -25,6 +44,8 @@ body {
     color: #555;
 }
 
+
+
 .leaflet-popup-photo a.leaflet-popup-close-button:hover {
     color: #333;
     background-color: #eee;
@@ -37,6 +58,7 @@ body {
 
 .leaflet-popup-photo .leaflet-popup-content {
     margin: 0;
+    width: 100%;
 }
 
 .leaflet-popup-photo .leaflet-popup-tip {
@@ -47,8 +69,11 @@ body {
 .leaflet-popup-photo video {
     display: block;
     width: 100%;
+   
 }
 
 .leaflet-popup-photo p {
+    font-family: 'Slabo 27px', serif;
+    font-size: 18px;
     margin: 5px 0 0 0;
 }

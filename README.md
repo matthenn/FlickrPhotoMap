@@ -7,4 +7,4 @@ Layout uses [Leaflet Sidebar v2](https://github.com/Turbo87/sidebar-v2).
 
 
 # to do:
-use d3 instead of jQuery
+~~use d3 instead of jQuery~~
