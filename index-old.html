@@ -55,7 +55,7 @@
     <script src="libs/Leaflet.Photo.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="libs/leaflet-sidebar.js"></script>
-    <!--<script src="https://d3js.org/d3.v4.min.js"></script> -->
+    
 
     <script>
         // create Leaflet map
@@ -110,9 +110,6 @@
             "method": "GET",
             "headers": {}
         };
-
-        /* d3.json(flickrGetPhotoData)
-             .get(getData) */
 
         //get data for all photos
         $.ajax(settings).done(function (data) {
