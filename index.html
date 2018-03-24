@@ -31,6 +31,11 @@
                         <i class="fa fa-github"></i>
                     </a>
                 </li>
+                <li>
+                    <a href="https://sebastian-ch.github.io/" role="tab" target="_blank">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -64,8 +69,8 @@
     <script src="libs/date.js"></script>
 
     <script>
+        
         // create Leaflet map
-
         var startingCenter = [21.452, -157.958],
             startingZoom = 11;
         var map = L.map('map', {
@@ -97,7 +102,7 @@
         var photoLayer = L.photo.cluster().on('click', function (evt) {
 
             var photo = evt.layer.photo,
-                template = '<img src="{thumbnail}"/></a><p><b>{parsedDate}</b></p>';
+                template = '<img src="{thumbnail}"/></a><p><b>{parsedDate}</b></p>'; //<br><a href="{thumbnail}" targer="_blank"><b>Full Image</b></a>';
             /*
             don't really need the video stuff, but meh maybe later
           
@@ -122,7 +127,6 @@
             flickrStart = "https://api.flickr.com/services/rest/?method=",
             flickrFormat = "&extras=media,date_taken,geo,url_n&format=json&nojsoncallback=1",
             flickrGetPhotoData = flickrStart + 'flickr.people.getPhotos' + flickrKey + userID + flickrFormat;
-
 
         d3.json(flickrGetPhotoData, {
             crossOrigin: "anonymous"
@@ -150,7 +154,6 @@
                     thumbnail: pic.url_n
                 });
             })
-
             getLocation(allPhotos);
         }
 

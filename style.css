@@ -29,6 +29,9 @@ body {
 #center, #latestPic {
     display: inline;
 }
+#latestPic {
+    margin-left: 0px;
+}
 
 /* photo/video popup */
 
