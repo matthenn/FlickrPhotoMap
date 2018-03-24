@@ -3,6 +3,19 @@
 <html lang="en">
 
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-90564282-5"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-90564282-5');
+    </script>
+
     <meta charset="utf-8">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico?" />
     <title>Flickr Photo Map</title>
@@ -69,7 +82,6 @@
     <script src="libs/date.js"></script>
 
     <script>
-        
         // create Leaflet map
         var startingCenter = [21.452, -157.958],
             startingZoom = 11;
