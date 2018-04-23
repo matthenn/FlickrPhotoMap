@@ -83,17 +83,18 @@
 
     <script>
         // create Leaflet map
-        var startingCenter = [21.452, -157.958],
-            startingZoom = 11;
+        var startingCenter = [-8.04, -184.13],
+            startingZoom = 4;
         var map = L.map('map', {
             zoomSnap: .2,
             zoomControl: false,
             center: startingCenter,
             zoom: startingZoom,
-            maxBounds: [
-                [22.990, -150.913],
-                [18.195, -164.829]
-            ]
+            //worldCopyJump: true
+            /* maxBounds: [
+                 [22.990, -150.913],
+                 [18.195, -164.829]
+             ] */
         });
 
         L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager_nolabels/{z}/{x}/{y}.png', {
@@ -153,6 +154,12 @@
             var allPhotos = [];
 
             data.photo.forEach(function (pic) {
+
+                //so leaflet doesn't worldjump -- creates a longitude outside of the norm
+                if (pic.longitude > 0) {
+                    pic.longitude = pic.longitude - 360;
+                }
+
                 allPhotos.push({
                     date: pic.datetaken,
                     parsedDate: Date.parse(pic.datetaken).toString('MMMM dS, yyyy'),
@@ -170,7 +177,7 @@
         }
 
         function getLocation(allPhotos) {
-            //  console.log(allPhotos)
+
             photoLayer.add(allPhotos).addTo(map);
             getLatestPic(allPhotos);
 
@@ -194,6 +201,7 @@
                     if (layer.photo.date === latest.date) {
                         var coords = layer._latlng,
                             zoom = 16;
+                        console.log(coords);
                         map.flyTo(coords, zoom, {
                             duration: 0.17
                         });
